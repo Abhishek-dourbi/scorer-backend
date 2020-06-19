@@ -6,6 +6,10 @@ const eventSchema = new mongoose.Schema({
         enum: ['Tournament', 'Series', 'Exhibition'],
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     numberOfOvers: {
         type: Number,
         default: 10
@@ -16,7 +20,8 @@ const eventSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Ongoing', 'Completed', 'Abandoned', 'Tie']
+        enum: ['League', 'Completed', 'Abandoned', 'Tie', 'NotStarted', 'Knockout'],
+        default: 'NotStarted'
     },
     completed: {
         type: Boolean,
@@ -26,9 +31,20 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    numberOfMatches: {
-        type: Number
+    knockoutMatches: {
+        type: Number,
+        default: 0
     },
+    numberOfMatches: {
+        type: Number,
+        required: true
+    },
+    header: {
+        type: String,
+        enum: ['Single', 'Double'],
+        default: 'Single'
+    },
+    fixtures: {},
     teams: [
         {
             name: {
@@ -102,6 +118,8 @@ const eventSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     }
+}, {
+    timestamps: true
 });
 
 eventSchema.virtual('matches', {

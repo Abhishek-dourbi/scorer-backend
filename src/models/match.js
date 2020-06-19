@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     firstTeamName: {
         type: String,
         required: true
@@ -195,6 +199,8 @@ const matchSchema = new mongoose.Schema({
         required: true,
         ref: 'Event'
     }
+},  {
+    timestamps: true
 });
 
 const match = mongoose.model(matchSchema);
