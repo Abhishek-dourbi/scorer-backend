@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const connectionURL = 'mongodb://Abhidourbi:venu1010@dbh29.mlab.com:27297/scorer-dev';
 
@@ -6,7 +6,7 @@ mongoose.connect(connectionURL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-}, (err, client) => {
+}, (err) => {
     if(err) {
         return console.log('Unable to connect to database', err);
     }

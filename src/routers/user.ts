@@ -1,8 +1,8 @@
-const express = require('express');
-const User = require('../models/user');
-const mongoose = require('mongoose');
-const router = new express.Router();
-const auth = require('../middlewares/auth');
+import express from 'express';
+import User from '../models/user';
+import mongoose from 'mongoose';
+import auth from '../middlewares/auth';
+const router = express.Router();
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body);
@@ -101,4 +101,4 @@ router.delete('/users/me', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

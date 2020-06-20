@@ -1,8 +1,8 @@
-const express = require('express');
-const Event = require('../models/event');
-const mongoose = require('mongoose');
+import express from 'express';
+import Event from '../models/event';
+import mongoose from 'mongoose';
 const router = express.Router();
-const auth = require('../middlewares/auth');
+import auth from '../middlewares/auth';
 
 router.post('/events', auth, async (req, res) => {
     try {
@@ -40,4 +40,4 @@ router.post('/events', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const matchSchema = new mongoose.Schema({
     name: {
@@ -205,4 +205,4 @@ const matchSchema = new mongoose.Schema({
 
 const match = mongoose.model(matchSchema);
 
-module.exports = match;
+export default match;
