@@ -33,14 +33,16 @@ const matchSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
-    teams: [
-        {
+    teams: {
+        type: Map,
+        of: {
             name: {
                 type: String,
                 required: true
             },
-            players: [
-                {
+            players: {
+                type: Map,
+                of: {
                     name: {
                         type: String,
                         required: true,
@@ -98,9 +100,9 @@ const matchSchema = new mongoose_1.default.Schema({
                         default: 11
                     }
                 }
-            ]
+            }
         }
-    ],
+    },
     firstInningsOvers: [
         {
             over: {
@@ -206,6 +208,6 @@ const matchSchema = new mongoose_1.default.Schema({
 }, {
     timestamps: true
 });
-const match = mongoose_1.default.model(matchSchema);
+const match = mongoose_1.default.model('match', matchSchema);
 exports.default = match;
 //# sourceMappingURL=match.js.map

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import {IUserModel, IUserSchema} from '../types/user';
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -12,10 +13,12 @@ const userSchema = new mongoose.Schema({
     age: {
         type: Number,
         default: 0,
-        validate(value) {
-            if(value < 0) {
-                throw new Error('Age not valid')
-            }
+        validate: {
+            validator (value: number) {
+                if(value < 0) {
+                    return false
+                }
+            },
         }
     },
     email: {
@@ -23,9 +26,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         unique: true,
-        validate(value) {
-            if(!validator.isEmail(value)) {
-                throw new Error('Email not valid')
+        validate: {
+            validator: function (value: string) {
+                if(!validator.isEmail(value)) {
+                    return false
+                }
             }
         }
     },
@@ -34,9 +39,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         minlength: 7,
-        validate(value) {
-            if(value.toLowerCase().includes('password')) {
-                throw new Error('Password cannot contain "password"')
+        validate: {
+            validator: function (value: string) {
+                if(value.toLowerCase().includes('password')) {
+                    return false
+                }
             }
         }
     },
@@ -66,7 +73,7 @@ userSchema.methods.toJSON = function() {
     delete userObject.tokens;
 
     return userObject;
-}
+};
 
 userSchema.methods.generateAuthToken = async function() {
     const user = this;
@@ -80,14 +87,15 @@ userSchema.methods.generateAuthToken = async function() {
 
 userSchema.pre('save', async function (next) {
     const user = this;
+    const userObject = user.toObject();
 
-    if(user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8);
+    if(userObject.isModified('password')) {
+        userObject.password = await bcrypt.hash(userObject.password, 8);
     }
     next();
 });
 
-userSchema.statics.findByCredentials = async (email, password) => {
+userSchema.statics.findByCredentials = async (email: string, password: string) => {
       const user = await User.findOne({ email });
       if(!user) {
           throw new Error('Unable to login');
@@ -100,6 +108,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
       return user;
 };
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model<IUserModel, IUserSchema>('user', userSchema);
 
 export default User;

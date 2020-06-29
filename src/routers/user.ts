@@ -1,6 +1,6 @@
 import express from 'express';
 import User from '../models/user';
-import mongoose from 'mongoose';
+import mongoose, {CastError} from 'mongoose';
 import auth from '../middlewares/auth';
 const router = express.Router();
 
@@ -29,7 +29,7 @@ router.post('/users/login', async (req, res) => {
 
 router.post('/users/logout', auth, async (req, res) => {
     try {
-        req.user.tokens = req.user.tokens.filter((token) => {
+        req.user.tokens = req.user.tokens.filter((token: { token: any; }) => {
             return token.token !== req.token;
         });
         await req.user.save();
@@ -53,20 +53,6 @@ router.get('/users/me', auth, async (req, res) => {
     res.send(req.user);
 });
 
-router.get('/users/:id', auth, async (req, res) => {
-    const _id = req.params.id;
-
-    try {
-        const user = await User.findById(_id);
-        res.send(user);
-    } catch (e) {
-        if(e instanceof mongoose.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
-        res.status(400).send(e);
-    }
-});
-
 router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'password', 'email', 'age'];
@@ -82,9 +68,6 @@ router.patch('/users/me', auth, async (req, res) => {
         // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });     // Won't work with mongoose schema middlewares
         res.send(req.user);
     } catch (e) {
-        if(e instanceof mongoose.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
         res.status(400).send(e);
     }
 });
@@ -94,9 +77,6 @@ router.delete('/users/me', auth, async (req, res) => {
         await req.user.remove();
         res.send(req.user);
     } catch (e) {
-        if(e instanceof mongoose.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
         res.status(500).send(e);
     }
 });

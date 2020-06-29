@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {IEvent} from "../types/event";
 
 const eventSchema = new mongoose.Schema({
     type: {
@@ -44,9 +45,9 @@ const eventSchema = new mongoose.Schema({
         enum: ['Single', 'Double'],
         default: 'Single'
     },
-    fixtures: {},
-    teams: [
-        {
+    teams: {
+        type: Map,
+        of: {
             name: {
                 type: String,
                 required: true
@@ -67,8 +68,9 @@ const eventSchema = new mongoose.Schema({
                 type: Number,
                 default: 0
             },
-            players: [
-                {
+            players: {
+                type: Map,
+                of: {
                     name: {
                         type: String,
                         required: true,
@@ -110,9 +112,9 @@ const eventSchema = new mongoose.Schema({
                         default: 0
                     }
                 }
-            ],
+            },
         }
-    ],
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -126,8 +128,8 @@ eventSchema.virtual('matches', {
     ref: 'Match',
     localField: '_id',
     foreignField: 'eventId'
-})
+});
 
-const event = mongoose.model('Event', eventSchema);
+const event = mongoose.model<IEvent>('Event', eventSchema);
 
 export default event;

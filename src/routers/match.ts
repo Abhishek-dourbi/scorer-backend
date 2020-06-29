@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/match', auth, async (req, res) => {
     const {eventId, firstTeamName, secondTeamName} = req.body;
-    const event = Event.findById(eventId);
+    const event = await Event.findById(eventId);
 
     const matchesPlayed = event.matches.filter(mat => (mat.firstTeamName === firstTeamName && mat.secondTeamName === secondTeamName) || (mat.secondTeamName === firstTeamName && mat.firstTeamName === secondTeamName))
 

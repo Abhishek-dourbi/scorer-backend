@@ -25,10 +25,12 @@ const userSchema = new mongoose_1.default.Schema({
     age: {
         type: Number,
         default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age not valid');
-            }
+        validate: {
+            validator(value) {
+                if (value < 0) {
+                    return false;
+                }
+            },
         }
     },
     email: {
@@ -36,9 +38,11 @@ const userSchema = new mongoose_1.default.Schema({
         required: true,
         trim: true,
         unique: true,
-        validate(value) {
-            if (!validator_1.default.isEmail(value)) {
-                throw new Error('Email not valid');
+        validate: {
+            validator: function (value) {
+                if (!validator_1.default.isEmail(value)) {
+                    return false;
+                }
             }
         }
     },
@@ -47,9 +51,11 @@ const userSchema = new mongoose_1.default.Schema({
         required: true,
         trim: true,
         minlength: 7,
-        validate(value) {
-            if (value.toLowerCase().includes('password')) {
-                throw new Error('Password cannot contain "password"');
+        validate: {
+            validator: function (value) {
+                if (value.toLowerCase().includes('password')) {
+                    return false;
+                }
             }
         }
     },
@@ -88,8 +94,9 @@ userSchema.methods.generateAuthToken = function () {
 userSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = this;
-        if (user.isModified('password')) {
-            user.password = yield bcryptjs_1.default.hash(user.password, 8);
+        const userObject = user.toObject();
+        if (userObject.isModified('password')) {
+            userObject.password = yield bcryptjs_1.default.hash(userObject.password, 8);
         }
         next();
     });

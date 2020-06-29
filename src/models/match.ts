@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {IMatch} from "../types/match";
 
 const matchSchema = new mongoose.Schema({
     name: {
@@ -29,14 +30,16 @@ const matchSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    teams: [
-        {
+    teams: {
+        type: Map,
+        of: {
             name: {
                 type: String,
                 required: true
             },
-            players: [
-                {
+            players: {
+                type: Map,
+                of: {
                     name: {
                         type: String,
                         required: true,
@@ -94,9 +97,9 @@ const matchSchema = new mongoose.Schema({
                         default: 11
                     }
                 }
-            ]
+            }
         }
-    ],
+    },
     firstInningsOvers: [
         {
             over: {
@@ -203,6 +206,6 @@ const matchSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const match = mongoose.model(matchSchema);
+const match = mongoose.model<IMatch>('match', matchSchema);
 
 export default match;

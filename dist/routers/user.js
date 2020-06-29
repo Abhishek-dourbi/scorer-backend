@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const user_1 = __importDefault(require("../models/user"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const auth_1 = __importDefault(require("../middlewares/auth"));
 const router = express_1.default.Router();
 router.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,19 +64,6 @@ router.post('/users/logoutAll', auth_1.default, (req, res) => __awaiter(void 0, 
 router.get('/users/me', auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send(req.user);
 }));
-router.get('/users/:id', auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const _id = req.params.id;
-    try {
-        const user = yield user_1.default.findById(_id);
-        res.send(user);
-    }
-    catch (e) {
-        if (e instanceof mongoose_1.default.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
-        res.status(400).send(e);
-    }
-}));
 router.patch('/users/me', auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'password', 'email', 'age'];
@@ -92,9 +78,6 @@ router.patch('/users/me', auth_1.default, (req, res) => __awaiter(void 0, void 0
         res.send(req.user);
     }
     catch (e) {
-        if (e instanceof mongoose_1.default.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
         res.status(400).send(e);
     }
 }));
@@ -104,9 +87,6 @@ router.delete('/users/me', auth_1.default, (req, res) => __awaiter(void 0, void 
         res.send(req.user);
     }
     catch (e) {
-        if (e instanceof mongoose_1.default.CastError) {
-            res.status(404).send("User doesn't exists");
-        }
         res.status(500).send(e);
     }
 }));

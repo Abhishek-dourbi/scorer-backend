@@ -1,10 +1,11 @@
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
-const auth = async (req, res, next) => {
+const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '');
-        const decoded = jwt.verify(token, 'scorerDevApp');
+        const decoded: any = jwt.verify(token, 'scorerDevApp');
         const user = await User.findOne({_id: decoded._id, 'tokens.token': token});
         if(!user) {
             throw new Error();

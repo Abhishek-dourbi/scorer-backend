@@ -19,7 +19,7 @@ const auth_1 = __importDefault(require("../middlewares/auth"));
 const router = express_1.default.Router();
 router.post('/match', auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { eventId, firstTeamName, secondTeamName } = req.body;
-    const event = event_1.default.findById(eventId);
+    const event = yield event_1.default.findById(eventId);
     const matchesPlayed = event.matches.filter(mat => (mat.firstTeamName === firstTeamName && mat.secondTeamName === secondTeamName) || (mat.secondTeamName === firstTeamName && mat.firstTeamName === secondTeamName));
     if (event.type === "Tournament" && event.header === "Double" && matchesPlayed.length === 2 && event.status !== "Knockout") {
         res.status(400).send({ error: `All matches between ${firstTeamName} and ${secondTeamName} has been completed` });

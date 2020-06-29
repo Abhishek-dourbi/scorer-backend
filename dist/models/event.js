@@ -48,9 +48,9 @@ const eventSchema = new mongoose_1.default.Schema({
         enum: ['Single', 'Double'],
         default: 'Single'
     },
-    fixtures: {},
-    teams: [
-        {
+    teams: {
+        type: Map,
+        of: {
             name: {
                 type: String,
                 required: true
@@ -71,8 +71,9 @@ const eventSchema = new mongoose_1.default.Schema({
                 type: Number,
                 default: 0
             },
-            players: [
-                {
+            players: {
+                type: Map,
+                of: {
                     name: {
                         type: String,
                         required: true,
@@ -114,9 +115,9 @@ const eventSchema = new mongoose_1.default.Schema({
                         default: 0
                     }
                 }
-            ],
+            },
         }
-    ],
+    },
     owner: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: true,
